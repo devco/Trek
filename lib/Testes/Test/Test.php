@@ -52,9 +52,9 @@ abstract class Test extends TestAbstract
         
         // exclude methods
         foreach ($self->getMethods() as $method) {
-        	if (!$method->isPublic()) {
-        		continue;
-        	}
+            if (!$method->isPublic()) {
+                continue;
+            }
             
             // make sure it was delcared by the test class
             if ($method->getDeclaringClass()->getName() !== get_class($this)) {

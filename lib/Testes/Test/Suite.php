@@ -30,7 +30,7 @@ abstract class Suite extends TestAbstract
         $this->addTests($this->getTestInstances());
     }
     
-	/**
+    /**
      * Runs all tests in the suite.
      * 
      * @return Suite

@@ -26,7 +26,7 @@ class Test extends Testes\Test\Test
     }
     
     public function fullUpgradeFromUnversioned()
-	{
+    {
         $this->migrator->up();
         $this->assert($this->migrator->version()->eq('1.0.0'));
     }
