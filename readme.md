@@ -72,6 +72,16 @@ If you want to move to a specific version:
 
     $migrator->to('1.0.0');
 
+If you want to be able to rollback if an error occurs:
+
+    try {
+        $migrator->up();
+    } catch (\Exception $e) {
+        $migrator->rollback();
+    }
+
+If errors occur during the rollback process, you will need to handle those manually.
+
 Running Tests
 -------------
 
