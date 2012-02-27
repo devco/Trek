@@ -58,21 +58,45 @@ class Version implements VersionInterface
         9  => 'Nine'
     );
     
+    /**
+     * Sets up the version instance.
+     * 
+     * @param mixed $version The verions to use. Defaults to 0.0.0.
+     * 
+     * @return Trek\Version
+     */
     public function __construct($version = self::INITIAL)
     {
         $this->parse($version);
     }
     
+    /**
+     * Returns the version as a string.
+     * 
+     * @return string
+     */
     public function __toString()
     {
         return $this->major . '.' . $this->minor . '.' . $this->patch;
     }
     
+    /**
+     * Compares this version to the specified version.
+     * 
+     * @param mixed $version The version to compare to.
+     * 
+     * @return int
+     */
     public function compare($version)
     {
         return version_compare($this->__toString(), (string) $version);
     }
     
+    /**
+     * Returns a namespace representing the version.
+     * 
+     * @return string
+     */
     public function ns()
     {
         return implode('\\', array(
@@ -82,6 +106,13 @@ class Version implements VersionInterface
         ));
     }
     
+    /**
+     * Converts the version part to a word.
+     * 
+     * @param string $part The part to convert to a word.
+     * 
+     * @return string
+     */
     private function toWord($part)
     {
         $word = '';
@@ -91,6 +122,13 @@ class Version implements VersionInterface
         return $word;
     }
     
+    /**
+     * Parses the version into its meaningful parts.
+     * 
+     * @param string $version The version to parse.
+     * 
+     * @return void
+     */
     private function parse($version)
     {
         // parse out <major>.<minor>.<patch>
