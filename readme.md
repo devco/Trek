@@ -72,7 +72,7 @@ If you want to move to a specific version:
 
     $migrator->to('1.0.0');
 
-If you want to be able to rollback if an error occurs:
+If you want to rollback because of an error:
 
     try {
         $migrator->up();
