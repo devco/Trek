@@ -2,75 +2,70 @@
 
 namespace Trek;
 
-class Version
+/**
+ * Represents a verison.
+ * 
+ * @category Versioning
+ * @package  Trek
+ * @author   Trey Shugart <treshugart@gmail.com>
+ * @license  MIT http://www.opensource.org/licenses/mit-license.php
+ */
+class Version implements VersionInterface
 {
+    /**
+     * The default version.
+     * 
+     * @var string
+     */
     const INITIAL = '0.0.0';
     
+    /**
+     * The major version.
+     * 
+     * @var int
+     */
     private $major;
     
+    /**
+     * The minor version.
+     * 
+     * @var int
+     */
     private $minor;
     
+    /**
+     * The patch version.
+     * 
+     * @var int
+     */
     private $patch;
     
-    private $words = array(
-        0 => 'Zero',
-        1 => 'One',
-        2 => 'Two',
-        3 => 'Three',
-        4 => 'Four',
-        5 => 'Five',
-        6 => 'Six',
-        7 => 'Seven',
-        8 => 'Eight',
-        9 => 'Nine'
+    /**
+     * Word mapping.
+     * 
+     * @var array
+     */
+    private $map = array(
+        0  => 'Zero',
+        1  => 'One',
+        2  => 'Two',
+        3  => 'Three',
+        4  => 'Four',
+        5  => 'Five',
+        6  => 'Six',
+        7  => 'Seven',
+        8  => 'Eight',
+        9  => 'Nine'
     );
     
     public function __construct($version = self::INITIAL)
     {
-        $parts       = explode('.', $version, 3);
-        $this->major = isset($parts[0]) ? (int) $parts[0] : 0;
-        $this->minor = isset($parts[1]) ? (int) $parts[1] : 0;
-        $this->patch = isset($parts[2]) ? (int) $parts[2] : 0;
+        $this->parse($version);
     }
     
     public function __toString()
     {
         return $this->major . '.' . $this->minor . '.' . $this->patch;
-    }
-    
-    public function getMajor()
-    {
-        return $this->major;
-    }
-    
-    public function getPatch()
-    {
-        return $this->patch;
-    }
-    
-    public function lt($version)
-    {
-        return $this->compare($version) === -1;
-    }
-    
-    public function gt($version)
-    {
-        return $this->compare($version) === 1;
-    }
-    
-    public function eq($version)
-    {
-        return $this->compare($version) === 0;
-    }
-    
-    public function gteq($version)
-    {
-        return $this->gt($version) || $this->eq($version);
-    }
-    
-    public function lteq($version)
-    {
-        return $this->lt($version) || $this->eq($version);
     }
     
     public function compare($version)
@@ -80,20 +75,30 @@ class Version
     
     public function ns()
     {
-        return $this->toWord($this->major) . '\\' . $this->toWord($this->minor) . '\\' . $this->toWord($this->patch);
-    }
-    
-    public function isInitial()
-    {
-        return $this->__toString() === self::INITIAL;
+        return implode('\\', array(
+            $this->toWord($this->major),
+            $this->toWord($this->minor),
+            $this->toWord($this->patch)
+        ));
     }
     
     private function toWord($part)
     {
         $word = '';
-        foreach (str_split($part) as $num) {
-            $word .= $this->words[(int) $num];
+        foreach (str_split($part) as $char) {
+            $word .= $this->map[$char];
         }
         return $word;
+    }
+    
+    private function parse($version)
+    {
+        // parse out <major>.<minor>.<patch>
+        preg_match('/(\d+)\.?(\d*)\.?(\d*)\.?(\d*)/', $version, $versions);
+
+        // set version parts
+        $this->major = isset($versions[1]) ? (int) $versions[1] : null;
+        $this->minor = isset($versions[2]) ? (int) $versions[2] : null;
+        $this->patch = isset($versions[3]) ? (int) $versions[3] : null;
     }
 }

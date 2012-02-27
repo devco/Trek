@@ -2,18 +2,59 @@
 
 namespace Trek;
 
+/**
+ * The main migrator class used for managing migrations.
+ * 
+ * @category Migrations
+ * @package  Trek
+ * @author   Trey Shugart <treshugart@gmail.com>
+ * @license  MIT http://www.opensource.org/licenses/mit-license.php
+ */
 class Migrator
 {
+    /**
+     * The default migration namespace.
+     * 
+     * @var string
+     */
     const NS = 'Migration';
     
+    /**
+     * The default version file name.
+     * 
+     * @var string
+     */
     const VERSION_FILE = 'version';
     
+    /**
+     * The base directory where migrations are kept.
+     * 
+     * @var string
+     */
     private $dir;
     
+    /**
+     * The namespace to use for migrations.
+     * 
+     * @var string
+     */
     private $ns;
     
+    /**
+     * The current version.
+     * 
+     * @var \Trek\Version
+     */
     private $version;
     
+    /**
+     * Sets up the migrator.
+     * 
+     * @param string $dir The base directory that all migrations are loaded from.
+     * @param string $ns  The namespace to use.
+     * 
+     * @return \Trek\Migrator
+     */
     public function __construct($dir, $ns = self::NS)
     {
         // a namespace must be specified
@@ -38,11 +79,23 @@ class Migrator
         $this->ns = trim($ns, '\\');
     }
     
+    /**
+     * Upgrades to the latest version.
+     * 
+     * @return \Trek\Migrator
+     */
     public function up()
     {
         return $this->to($this->versions()->last());
     }
-        
+    
+    /**
+     * Migrates to the specified version.
+     * 
+     * @param mixed $version The version to migrate to.
+     * 
+     * @return \Trek\Migrator
+     */
     public function to($version)
     {
         $it  = $this->versions();
@@ -53,13 +106,13 @@ class Migrator
             $it->seek($cur);
         }
         
-        if ($ver->gt($it->current())) {
-            while ($it->valid() && $ver->gteq($it->current())) {
+        if ($ver->compare($it->current()) === 1) {
+            while ($it->valid() && $ver->compare($it->current()) >= 0) {
                 $it->migrations()->up();
                 $it->next();
             }
         } else {
-            while ($it->valid() && $ver->lteq($it->current())) {
+            while ($it->valid() && $ver->compare($it->current()) <= 0) {
                 $it->migrations()->down();
                 $it->prev();
             }
@@ -68,26 +121,31 @@ class Migrator
         return $this;
     }
     
+    /**
+     * Returns the namespace associated to the current instance.
+     * 
+     * @return string
+     */
     public function ns()
     {
         return $this->ns;
     }
     
+    /**
+     * Returns the base load path associated to the current instance.
+     * 
+     * @return string
+     */
     public function path()
     {
         return $this->dir;
     }
     
-    public function versionNs()
-    {
-        return '\\' . $this->ns . '\\' . $this->version->ns();
-    }
-    
-    public function versionPath()
-    {
-        return $this->dir . DIRECTORY_SEPARATOR . $this->version;
-    }
-    
+    /**
+     * Returns the version instance representing the current version of your code.
+     * 
+     * @return \Trek\Version
+     */
     public function version()
     {
         if (!$this->version) {
@@ -97,11 +155,23 @@ class Migrator
         return $this->version;
     }
     
+    /**
+     * Returns a version iterator representing the current migrator.
+     * 
+     * @return \Trek\VersionIterator
+     */
     public function versions()
     {
         return new VersionIterator($this);
     }
     
+    /**
+     * Updates the version tracker to the specified version. If a version is not specified, it is bumped to the next available version.
+     * 
+     * @param mixed $version The version to track.
+     * 
+     * @return \Trek\Migrator
+     */
     public function bump($version = null)
     {
         // Detect version we are bumping to.
@@ -116,6 +186,11 @@ class Migrator
         return $this;
     }
     
+    /**
+     * Detects the current version and returns it.
+     * 
+     * @return \Trek\Version
+     */
     private function detectVersion()
     {
         $file = $this->getVersionFile();
@@ -125,6 +200,11 @@ class Migrator
         return new Version;
     }
     
+    /**
+     * Returns the path to the version file.
+     * 
+     * @return string
+     */
     private function getVersionFile()
     {
         return $this->dir . DIRECTORY_SEPARATOR . self::VERSION_FILE;

@@ -3,12 +3,12 @@
 namespace Trek;
 
 /**
- * The autoloader.
+ * The autoloader
  * 
  * @category Autoloading
  * @package  Trek
  * @author   Trey Shugart <treshugart@gmail.com>
- * @license  Copyright (c) 2010 Trey Shugart http://europaphp.org/license
+ * @license  MIT http://www.opensource.org/licenses/mit-license.php
  */
 class Autoloader
 {

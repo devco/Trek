@@ -25,27 +25,33 @@ class Test extends Testes\Test\Test
         unlink(__DIR__ . DIRECTORY_SEPARATOR . 'migrations' . DIRECTORY_SEPARATOR . Migrator::VERSION_FILE);
     }
     
+    public function versioning()
+    {
+        $ver = new Version('1.12.123');
+        $this->assert($ver->ns() === 'One\OneTwo\OneTwoThree');
+    }
+    
     public function fullUpgradeFromUnversioned()
     {
         $this->migrator->up();
-        $this->assert($this->migrator->version()->eq('1.0.0'));
+        $this->assert($this->migrator->version()->compare('1.0.0') === 0);
     }
     
     public function specificDowngrade()
     {
         $this->migrator->to('0.0.1');
-        $this->assert($this->migrator->version()->eq('0.0.1'));
+        $this->assert($this->migrator->version()->compare('0.0.1') === 0);
     }
     
     public function specificUpgrade()
     {
         $this->migrator->to('0.1.0');
-        $this->assert($this->migrator->version()->eq('0.1.0'));
+        $this->assert($this->migrator->version()->compare('0.1.0') === 0);
     }
     
     public function fullUpgradeFromExistingVersion()
     {
         $this->migrator->up();
-        $this->assert($this->migrator->version()->eq('1.0.0'));
+        $this->assert($this->migrator->version()->compare('1.0.0') === 0);
     }
 }
