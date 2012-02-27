@@ -48,6 +48,13 @@ class Migrator
     private $version;
     
     /**
+     * Set when beginning a migration so rollback() can be called.
+     * 
+     * @var \Trek\Version
+     */
+    private $rollbackVersion;
+    
+    /**
      * Sets up the migrator.
      * 
      * @param string $dir The base directory that all migrations are loaded from.
@@ -106,6 +113,8 @@ class Migrator
             $it->seek($cur);
         }
         
+        $this->rollbackVersion = $cur;
+        
         if ($ver->compare($it->current()) === 1) {
             while ($it->valid() && $ver->compare($it->current()) >= 0) {
                 $it->migrations()->up();
@@ -117,6 +126,27 @@ class Migrator
                 $it->prev();
             }
         }
+        
+        return $this;
+    }
+    
+    /**
+     * Rolls back the migration to the previous version.
+     * 
+     * @return \Trek\Migrator
+     */
+    public function rollback()
+    {
+        // ensure we can rollback
+        if (!$this->rollbackVersion) {
+            throw new \RuntimeException('Cannot rollback migration if a migration has not been initiated.');
+        }
+        
+        // perform rollback (can be up or down)
+        $this->to($this->rollbackVersion);
+        
+        // remove the rollback version
+        $this->rollbackVersion = null;
         
         return $this;
     }

@@ -31,19 +31,19 @@ class Test extends Testes\Test\Test
         $this->assert($ver->ns() === 'One\OneTwo\OneTwoThree');
     }
     
-    public function fullUpgradeFromUnversioned()
+    public function multipleUpgradesToLatestStable()
     {
-        $this->migrator->up();
+        $this->migrator->to('1.0.0');
         $this->assert($this->migrator->version()->compare('1.0.0') === 0);
     }
     
-    public function specificDowngrade()
+    public function multipleDowngradesFromLatestStable()
     {
         $this->migrator->to('0.0.1');
         $this->assert($this->migrator->version()->compare('0.0.1') === 0);
     }
     
-    public function specificUpgrade()
+    public function singleUpgradeFromFirstVersion()
     {
         $this->migrator->to('0.1.0');
         $this->assert($this->migrator->version()->compare('0.1.0') === 0);
@@ -51,7 +51,20 @@ class Test extends Testes\Test\Test
     
     public function fullUpgradeFromExistingVersion()
     {
-        $this->migrator->up();
+        $this->migrator->to('1.0.0');
+        $this->assert($this->migrator->version()->compare('1.0.0') === 0);
+    }
+    
+    public function rollbackProcedureUsingFullUpgrade()
+    {
+        // ensure an exception is caught
+        try {
+            $this->migrator->up();
+        } catch (\Exception $e) {
+            $this->assert($e->getMessage() === 'Testing rollback.');
+        }
+        
+        // ensure that the version is NOT bumped
         $this->assert($this->migrator->version()->compare('1.0.0') === 0);
     }
 }
