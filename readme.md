@@ -20,7 +20,11 @@ In order to map the version directory to part of the migration class namespace, 
 
 ### `<number>`
 
-The number part of the file name allows you to simply define which order you want your migrations to be run in. This part, in addition to the underscore and file extension, is removed in order to resolve the class name. No other transformations occur.
+The number part of the file name allows you to simply define which order you want your migrations to be run in. It is removed from the actual class name during resolution.
+
+### `<classname>`
+
+This part of the file name maps directly to the class name within the resolved namespace.
 
 Writing Migrations
 ------------------
@@ -29,7 +33,7 @@ The following is a migration for `Migration/1.0.10/1_AddUserTable.php`:
 
     <?php
     
-    namespace Migration\One\Zero\Ten;
+    namespace Migration\One\Zero\OneZero;
     use Trek\MigrationInterface;
     
     class AddUserTable implements MigrationInterface
@@ -71,6 +75,6 @@ If you want to move to a specific version:
 Running Tests
 -------------
 
-To run the tests from the work copy root:
+To run the tests from the working copy root:
 
     php bin/tests.php
