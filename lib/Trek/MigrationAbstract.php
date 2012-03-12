@@ -10,33 +10,35 @@ namespace Trek;
 * @author   Trey Shugart <treshugart@gmail.com>
 * @license  MIT http://www.opensource.org/licenses/mit-license.php
 */
-interface MigrationInterface
+abstract class MigrationAbstract implements MigrationInterface
 {
     /**
      * Set up the migration.
      * 
      * @return void
      */
-    public function setUp();
-    
+    public function setUp()
+    {
+        
+    }
+
     /**
      * Tear down the migration.
      * 
      * @return void
      */
-    public function tearDown();
+    public function tearDown()
+    {
+        
+    }
     
     /**
-     * Runs the upgrade.
+     * Empty down method since not everyone will write one.
      * 
      * @return void
      */
-    public function up();
-    
-    /**
-     * Runs the downgrade.
-     * 
-     * @return void
-     */
-    public function down();
+    public function down()
+    {
+        
+    }
 }

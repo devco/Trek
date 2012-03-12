@@ -1,8 +1,9 @@
 <?php
 
 namespace Migration\Two\Zero\Zero;
+use Trek\MigrationAbstract;
 
-class TestRollback
+class TestRollback extends MigrationAbstract
 {
 	public function up()
 	{

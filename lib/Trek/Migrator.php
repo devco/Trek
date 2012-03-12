@@ -1,6 +1,9 @@
 <?php
 
 namespace Trek;
+use Exception;
+use InvalidArgumentException;
+use RuntimeException;
 
 /**
  * The main migrator class used for managing migrations.
@@ -55,6 +58,13 @@ class Migrator
     private $rollbackVersion;
     
     /**
+     * The last error that occured, if any.
+     * 
+     * @var Exception | null
+     */
+    private $error;
+    
+    /**
      * Sets up the migrator.
      * 
      * @param string $dir The base directory that all migrations are loaded from.
@@ -66,17 +76,19 @@ class Migrator
     {
         // a namespace must be specified
         if (!$ns) {
-            throw new \InvalidArgumentException('You must specify a namespace.');
+            throw new InvalidArgumentException('You must specify a namespace.');
         }
         
         // the directory must exist
         if (!is_dir($dir)) {
-            throw new \InvalidArgumentException('The directory "' . $dir . '" does not exist.');
+            throw new InvalidArgumentException('The directory "' . $dir . '" does not exist.');
         }
         
         // the directory must be writable
         if (!is_writable($dir)) {
-            throw new \RuntimeException('The directory "' . $dir . '" must be writable in order to track versions.');
+            throw new RuntimeException(
+                'The directory "' . $dir . '" must be writable in order to track versions.'
+            );
         }
         
         // resolve the path
@@ -105,26 +117,14 @@ class Migrator
      */
     public function to($version)
     {
-        $it  = $this->versions();
-        $ver = new Version($version);
-        $cur = $this->version();
+        $this->error = null;
         
-        if ($it->exists($cur)) {
-            $it->seek($cur);
-        }
-        
-        $this->rollbackVersion = $cur;
-        
-        if ($ver->compare($it->current()) === 1) {
-            while ($it->valid() && $ver->compare($it->current()) >= 0) {
-                $it->migrations()->up();
-                $it->next();
-            }
-        } else {
-            while ($it->valid() && $ver->compare($it->current()) <= 0) {
-                $it->migrations()->down();
-                $it->prev();
-            }
+        try {
+            $this->tryTo($version);
+            $this->bump($version);
+        } catch (Exception $e) {
+            $this->rollback();
+            $this->error = $e;
         }
         
         return $this;
@@ -139,11 +139,19 @@ class Migrator
     {
         // ensure we can rollback
         if (!$this->rollbackVersion) {
-            throw new \RuntimeException('Cannot rollback migration if a migration has not been initiated.');
+            return $this;
         }
         
         // perform rollback (can be up or down)
-        $this->to($this->rollbackVersion);
+        try {
+            $this->tryTo($this->rollbackVersion);
+        } catch (Exception $e) {
+            throw new RuntimeException(
+                "Cannot rollback to {$this->rollbackVersion}.",
+                $e->getCode(),
+                $e
+            );
+        }
         
         // remove the rollback version
         $this->rollbackVersion = null;
@@ -180,7 +188,6 @@ class Migrator
     {
         if (!$this->version) {
             $this->version = $this->detectVersion();
-            $this->bump($this->version);
         }
         return $this->version;
     }
@@ -196,6 +203,16 @@ class Migrator
     }
     
     /**
+     * Returns whether or not a version exists.
+     * 
+     * @return bool
+     */
+    public function isVersioned()
+    {
+        return file_exists($this->getVersionFile());
+    }
+    
+    /**
      * Updates the version tracker to the specified version. If a version is not specified, it is bumped to the next available version.
      * 
      * @param mixed $version The version to track.
@@ -205,7 +222,7 @@ class Migrator
     public function bump($version = null)
     {
         // Detect version we are bumping to.
-        $version = $version ? $version : $this->versions()->next()->current();
+        $version = $version ? new Version($version) : $this->versions()->next()->current();
         
         // Update stored version.
         file_put_contents($this->getVersionFile(), (string) $version);
@@ -214,6 +231,58 @@ class Migrator
         $this->version = $version;
         
         return $this;
+    }
+    
+    /**
+     * Returns the last error.
+     * 
+     * @return Exception | null
+     */
+    public function error()
+    {
+        return $this->error;
+    }
+    
+    /**
+     * Runs migrations to the specified version from the current version.
+     * 
+     * @param string $version The version to migrate to.
+     * 
+     * @return void
+     */
+    private function tryTo($version)
+    {
+        $it   = $this->versions();
+        $ver  = new Version($version);
+        $cur  = $this->version();
+        $diff = $ver->compare($cur);
+        
+        // move to the current version if it exists, or we assume full upgrade
+        if ($it->exists($cur)) {
+            $it->seek($cur);
+            
+            // if we are upgrading, we must first move to the next version
+            if ($diff === 1) {
+                $it->next();
+            }
+        }
+        
+        // so we can rollback to the current version
+        $this->rollbackVersion = $cur;
+        
+        // if the current version is great than the desired version, upgrade
+        // otherwise if it is less than, downgrade
+        if ($diff === 1) {
+            while ($it->valid() && $ver->compare($it->current()) >= 0) {
+                $it->migrations()->up();
+                $it->next();
+            }
+        } elseif ($diff === -1) {
+            while ($it->valid() && $ver->compare($it->current()) === -1) {
+                $it->migrations()->down();
+                $it->prev();
+            }
+        }
     }
     
     /**

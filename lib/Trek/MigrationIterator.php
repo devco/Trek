@@ -1,6 +1,7 @@
 <?php
 
 namespace Trek;
+use RuntimeException;
 
 /**
  * Used to locate and iterate over migration instances.
@@ -56,9 +57,10 @@ class MigrationIterator implements \Iterator
     public function up()
     {
         foreach ($this as $migration) {
+            $migration->setUp();
             $migration->up();
+            $migration->tearDown();
         }
-        $this->migrator->bump($this->version);
         return $this;
     }
     
@@ -70,9 +72,10 @@ class MigrationIterator implements \Iterator
     public function down()
     {
         foreach ($this as $migration) {
+            $migration->setUp();
             $migration->down();
+            $migration->tearDown();
         }
-        $this->migrator->bump($this->version);
         return $this;
     }
 
@@ -176,8 +179,17 @@ class MigrationIterator implements \Iterator
     private function instantiate($item)
     {
         require_once $this->getFileName($item);
+        
         $class = $this->getClassName($item);
-        return new $class;
+        $class = new $class;
+        
+        if (!$class instanceof MigrationInterface) {
+            throw new RuntimeException(
+                "Class {$class} must derive from \Trek\MigrationInterface."
+            );
+        }
+        
+        return $class;
     }
 
     /**
@@ -189,7 +201,7 @@ class MigrationIterator implements \Iterator
      */
     private function isValidMigration($item)
     {
-        return preg_match('/^[^[0-9]/', $item);
+        return preg_match('/^[0-9]+_/', $item);
     }
     
     /**
@@ -202,9 +214,11 @@ class MigrationIterator implements \Iterator
         $path = $this->migrator->path() . DIRECTORY_SEPARATOR . $this->version->__toString();
         foreach (new \DirectoryIterator($path) as $item) {
             $item = $item->getBasename();
-            if ($this->isValidMigration($item)) {
+            
+            if (!$this->isValidMigration($item)) {
                 continue;
             }
+            
             $this->migrations[] = $this->instantiate($item);
         }
     }

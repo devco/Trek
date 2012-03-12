@@ -1,9 +1,9 @@
 <?php
 
 namespace Migration\One\Zero\Zero;
-use Trek\MigrationInterface;
+use Trek\MigrationAbstract;
 
-class RenameLibraryToLib implements MigrationInterface
+class RenameLibraryToLib extends MigrationAbstract
 {
     public function down()
     {

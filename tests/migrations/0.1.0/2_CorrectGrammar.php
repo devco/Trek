@@ -1,9 +1,9 @@
 <?php
 
 namespace Migration\Zero\One\Zero;
-use Trek\MigrationInterface;
+use Trek\MigrationAbstract;
 
-class CorrectGrammar implements MigrationInterface
+class CorrectGrammar extends MigrationAbstract
 {
     public function down()
     {

@@ -1,9 +1,9 @@
 <?php
 
 namespace Migration\Zero\Zero\One;
-use Trek\MigrationInterface;
+use Trek\MigrationAbstract;
 
-class ConvertUnderscoreToNs implements MigrationInterface
+class ConvertUnderscoreToNs extends MigrationAbstract
 {
     public function down()
     {
