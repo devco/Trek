@@ -225,7 +225,7 @@ class VersionIterator implements \Iterator
      */
     private function detectVersions($reverse = false)
     {
-        $versions = array();
+        $this->versions = array();
         foreach (new \DirectoryIterator($this->migrator->path()) as $index => $version) {
             $version = $version->getBasename();
             

@@ -71,7 +71,8 @@ class MigrationIterator implements \Iterator
      */
     public function down()
     {
-        foreach ($this as $migration) {
+        $migrations = array_reverse($this->migrations);
+        foreach ($migrations as $migration) {
             $migration->setUp();
             $migration->down();
             $migration->tearDown();
@@ -211,7 +212,10 @@ class MigrationIterator implements \Iterator
      */
     private function detectMigrations()
     {
+        $temp = [];
         $path = $this->migrator->path() . DIRECTORY_SEPARATOR . $this->version->__toString();
+        
+        // first we get an array of each file name
         foreach (new \DirectoryIterator($path) as $item) {
             $item = $item->getBasename();
             
@@ -219,6 +223,14 @@ class MigrationIterator implements \Iterator
                 continue;
             }
             
+            $temp[] = $item;
+        }
+        
+        // make sure they are listed in alphabetical order
+        sort($temp);
+        
+        // then instantiate them
+        foreach ($temp as $item) {
             $this->migrations[] = $this->instantiate($item);
         }
     }
