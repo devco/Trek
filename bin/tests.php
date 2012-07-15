@@ -1,49 +1,30 @@
 <?php
 
-use Testes\Autoloader\Autoloader;
-use Testes\Coverage\Analyzer;
 use Testes\Coverage\Coverage;
+use Testes\Finder\Finder;
+use Testes\Autoloader;
 
-ini_set('display_errors', 'on');
-error_reporting(E_ALL ^ E_STRICT);
+$base = __DIR__ . '/..';
 
-$lib = dirname(__FILE__) . '/../lib/';
-$dir = $lib . '/../tests';
+require $base . '/vendor/autoload.php';
 
-require $lib . 'Testes/Autoloader/Autoloader.php';
-Autoloader::register($dir);
+Autoloader::register();
+Autoloader::addPath($base . '/tests');
 
-// set up the test renderer and runner
-$type  = isset($_SERVER['argv'][1]) ? $_SERVER['argv'][1] : 'cli';
-$type  = ucfirst($type);
-$type  = '\Testes\Renderer\\' . $type;
-$type  = new $type;
-$tests = new Test;
+$coverage = (new Coverage)->start();
+$suite    = (new Finder($base . '/tests'))->run();
+$analyzer = $coverage->stop()->addDirectory($base . '/src')->is('\.php$');
 
-// start covering tests
-$coverage = new Coverage;
-$coverage->start();
+?>
 
-// run the tests
-$tests = new Test;
-$tests->run();
+<?php if ($suite->getAssertions()->isPassed()): ?>
+All tests passed!
+<?php else: ?>
+Tests failed:
+<?php foreach ($suite->getAssertions()->getFailed() as $ass): ?>
+  <?php echo $ass->getTestClass(); ?>
+<?php endforeach; ?>
+<?php endif; ?>
 
-// stop coverage
-$coverage = $coverage->stop();
+Coverage: <?php echo $analyzer->getPercentTested(); ?>%
 
-// analyze and output code coverage
-$analyzer = new Analyzer($coverage);
-$analyzer->addDirectory($lib . 'Trek');
-
-// output test results
-echo $type->render($tests);
-
-// output coverage
-echo 'Coverage: '
-    . $analyzer->getPercentage()
-    . '% of lines across '
-    . count($analyzer->getTestedFiles())
-    . ' of '
-    . (count($analyzer->getTestedFiles()) + count($analyzer->getUntestedFiles()))
-    . ' files.'
-    . "\n";

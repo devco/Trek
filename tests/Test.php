@@ -1,10 +1,11 @@
 <?php
 
+use Testes\Test\UnitAbstract;
 use Trek\Autoloader;
 use Trek\Migrator;
 use Trek\Version;
 
-class Test extends Testes\Test\Test
+class Test extends UnitAbstract
 {
     private $migrator;
     
@@ -12,7 +13,7 @@ class Test extends Testes\Test\Test
     {
         // register autolaoding
         // this may not be necessary for other libraries that follow proper autoloading conventions
-        require_once(__DIR__ . '/../lib/Trek/Autoloader.php');
+        require_once(__DIR__ . '/../src/Trek/Autoloader.php');
         Autoloader::register();
         
         // so we don't have to re-instantiate it for every test

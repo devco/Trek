@@ -1,0 +1,30 @@
+{
+    "authors": [
+        {
+            "name": "Trey Shugart",
+            "email": "treshugart@gmail.com",
+            "homepage": "http://iamtres.com",
+            "role": "Lead Developer"
+        }, {
+            "name": "Josh Bones",
+            "role": "Developer"
+        }, {
+            "name": "Russel Holman",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Trek": "src"
+        }
+    },
+    "description": "Trek is a simple migration and versioning library. It abstracts the version tracking and migration between versions allowing you to focus on writing clean migration scrpts based on a simple interface.",
+    "homepage": "http://github.com/devco/Trek",
+    "keywords": ["migrate", "migrating", "migration", "version", "versioning"],
+    "license": "MIT",
+    "name": "devco/trek",
+    "require": {
+        "php": ">=5.4.0",
+        "treshugart/testes": "dev-master"
+    }
+}
