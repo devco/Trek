@@ -68,4 +68,11 @@ class Test extends UnitAbstract
         // ensure that the version is NOT bumped
         $this->assert($this->migrator->version()->compare('1.0.0') === 0);
     }
+    
+    public function downgradeToFirstVersion()
+    {
+        $this->migrator->down();
+        
+        $this->assert($this->migrator->version()->compare('0.0.1') === 0);
+    }
 }
