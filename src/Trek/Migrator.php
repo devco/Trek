@@ -109,6 +109,16 @@ class Migrator
     }
     
     /**
+     * Downgrades to the first version
+     * 
+     * @return \Trek\Migrator 
+     */
+    public function down()
+    {
+        return $this->to($this->versions()->first());
+    }
+    
+    /**
      * Migrates to the specified version.
      * 
      * @param mixed $version The version to migrate to.
