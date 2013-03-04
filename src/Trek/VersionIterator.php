@@ -238,7 +238,7 @@ class VersionIterator implements \Iterator
             $this->versions[] = $version;
         }
         
-        sort($this->versions);
+        natsort($this->versions);
         
         // if downgrading
         if ($reverse) {
