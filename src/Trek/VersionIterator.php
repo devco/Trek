@@ -238,6 +238,8 @@ class VersionIterator implements \Iterator
             $this->versions[] = $version;
         }
         
+        sort($this->versions);
+        
         // if downgrading
         if ($reverse) {
             $this->versions = array_reverse($this->versions);
