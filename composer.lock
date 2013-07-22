@@ -1,0 +1,77 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "c5893ed75b1ba7b521fed6081df2caff",
+    "packages": [
+
+    ],
+    "packages-dev": [
+        {
+            "name": "treshugart/testes",
+            "version": "1.0.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/treshugart/Testes.git",
+                "reference": "8f9d90d773cf19ec61fd497795f80f817ab1f002"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/treshugart/Testes/zipball/8f9d90d773cf19ec61fd497795f80f817ab1f002",
+                "reference": "8f9d90d773cf19ec61fd497795f80f817ab1f002",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "ext-xdebug": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Testes": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Trey Shugart",
+                    "email": "treshugart@gmail.com",
+                    "homepage": "http://iamtres.com",
+                    "role": "Lead Developer"
+                }
+            ],
+            "description": "Dead simple unit and story test framework.",
+            "homepage": "http://github.com/treshugart/Testes",
+            "keywords": [
+                "BDD",
+                "Behavior",
+                "development",
+                "driven",
+                "story",
+                "test",
+                "testing",
+                "unit"
+            ],
+            "time": "2013-07-09 19:30:13"
+        }
+    ],
+    "aliases": [
+
+    ],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "treshugart/testes": 20
+    },
+    "platform": {
+        "php": ">=5.4.0"
+    },
+    "platform-dev": [
+
+    ]
+}
