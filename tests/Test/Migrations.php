@@ -1,49 +1,23 @@
 <?php
 
+namespace Test;
 use Testes\Test\UnitAbstract;
 use Trek\Autoloader;
 use Trek\Migrator;
-use Trek\Version;
 
-class Test extends UnitAbstract
+class Migrations extends UnitAbstract
 {
     private $migrator;
 
     public function setUp()
     {
-        // register autolaoding
-        // this may not be necessary for other libraries that follow proper autoloading conventions
-        require_once(__DIR__ . '/../src/Trek/Autoloader.php');
-        Autoloader::register();
-
-        // so we don't have to re-instantiate it for every test
-        $this->migrator = new Migrator(__DIR__ . '/migrations');
+        $this->migrator = new Migrator(__DIR__ . '/../migrations');
     }
 
     public function tearDown()
     {
         // ensure the version file is removed to reset tests and to not screw with version control
-        unlink(__DIR__ . DIRECTORY_SEPARATOR . 'migrations' . DIRECTORY_SEPARATOR . Migrator::VERSION_FILE);
-    }
-
-    public function versionNamespacing()
-    {
-        $ver = new Version('1.12.123');
-        $this->assert($ver->ns() === 'One\OneTwo\OneTwoThree');
-
-        $ver = new Version('1.0.0-alpha');
-        $this->assert($ver->ns() === 'One\Zero\Zero\Alpha');
-
-        $ver = new Version('1.0.0-beta.1');
-        $this->assert($ver->ns() === 'One\Zero\Zero\Beta\One');
-
-        $ver = new Version('1.0.0-rc.12');
-        $this->assert($ver->ns() === 'One\Zero\Zero\Rc\OneTwo');
-    }
-
-    public function versionOrdering()
-    {
-        $ver = new Version('1.0.0');
+        unlink(__DIR__ . '/../migrations/' . Migrator::VERSION_FILE);
     }
 
     public function multipleUpgradesToLatestStable()

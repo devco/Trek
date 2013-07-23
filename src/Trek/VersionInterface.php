@@ -6,7 +6,7 @@ interface VersionInterface
 {
 		const INITIAL = '0.0.0';
 
-    const REGEX = '/(\d+)\.?(\d*)\.?(\d*)-?(alpha|beta|rc)?\.?(\d*)/';
+    const REGEX = '/(\d+)\.?(\d*)\.?(\d*)-?(dev|a|alpha|b|beta|rc|p|pl)?\.?(\d*)/';
 
 		public function __toString();
 

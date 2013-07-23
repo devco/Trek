@@ -35,6 +35,7 @@ class VersionIterator implements \Iterator
         if (!isset($this->versions[$index])) {
             throw new \InvalidArgumentException('The version at "' . $index . '" does not exist.');
         }
+
         return $this->versions[$index];
     }
 
@@ -63,7 +64,7 @@ class VersionIterator implements \Iterator
 
     public function asc()
     {
-        natsort($this->versions);
+        usort($this->versions, 'version_compare');
         $this->versions = array_values($this->versions);
         $this->direction = self::SORT_ASC;
         return $this;
