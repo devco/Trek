@@ -18,6 +18,16 @@ By default it is set to `Migration` but you can change it to whatever you want a
 
 In order to map the version directory to part of the migration class namespace, it is transformed so that each number is mapped to its English word and each period is replaced by a namespace separator.
 
+The version also supports the usage of a pre-release version and pre-release version number.
+
+- 1.0.0-alpha
+- 1.0.0-alpha.1
+- 1.0.0-beta
+- 1.0.0-beta.1
+- 1.0.0-rc.1
+
+...and so forth.
+
 ### `<number>`
 
 The number part of the file name allows you to simply define which order you want your migrations to be run in. It is removed from the actual class name during resolution.
@@ -32,17 +42,17 @@ Writing Migrations
 The following is a migration for `Migration/1.0.10/1_AddUserTable.php`:
 
     <?php
-    
+
     namespace Migration\One\Zero\OneZero;
     use Trek\MigrationInterface;
-    
+
     class AddUserTable implements MigrationInterface
     {
         public function up()
         {
             // upgrade code here...
         }
-        
+
         public function down()
         {
             // downgrade code here...
@@ -57,9 +67,9 @@ Migrating
 Migration is done by using the `Trek\Migrator` class.
 
     <?php
-    
+
     use Trek\Migrator;
-    
+
     $migrator = new Migrator('path/to/migrations', 'Migration\Namespace');
 
 The migrator requires you pass it a directory to load the migrations from and an optional, preferred namespace to use instead of the default.
