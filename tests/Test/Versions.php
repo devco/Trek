@@ -55,5 +55,11 @@ class Versions extends UnitAbstract
         foreach ($ordered as $index => $version) {
             $this->assert($versions->at($index)->compare($version) === 0, "{$version} !== {$versions->at($index)}");
         }
+
+        $versions->desc();
+
+        foreach ($reversed as $index => $version) {
+            $this->assert($versions->at($index)->compare($version) === 0, "{$version} !== {$versions->at($index)}");
+        }
     }
 }

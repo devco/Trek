@@ -72,7 +72,7 @@ class VersionIterator implements \Iterator
 
     public function desc()
     {
-        $this->up();
+        $this->asc();
         $this->versions = array_reverse($this->versions);
         $this->direction = self::SORT_DESC;
         return $this;
