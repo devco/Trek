@@ -156,7 +156,7 @@ class Migrator
                 $versions->next();
             }
         } elseif ($diff === -1) {
-            while ($versions->valid() && $version->compare($versions->current()) === -1) {
+            while ($versions->valid() && $version->compare($versions->current()) <= 0) {
                 $migrations = new MigrationIterator($this, $versions->current());
                 $migrations->down();
                 $versions->prev();
