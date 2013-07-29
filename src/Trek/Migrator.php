@@ -122,13 +122,10 @@ class Migrator
 
     public function bump($version = null)
     {
-        // Detect version we are bumping to.
         $version = $version ? new Version($version) : $this->versions()->next()->current();
 
-        // Update stored version.
         file_put_contents($this->getVersionFile(), (string) $version);
 
-        // Update cached version.
         $this->version = $version;
 
         return $this;
@@ -146,21 +143,12 @@ class Migrator
         $current = $this->version();
         $diff = $version->compare($current);
 
-        // move to the current version if it exists, or we assume full upgrade
         if ($versions->exists($current)) {
             $versions->seek($current);
-
-            // if we are upgrading, we must first move to the next version
-            if ($diff === 1) {
-                $versions->next();
-            }
         }
 
-        // so we can rollback to the current version
         $this->rollbackVersion = $current;
 
-        // if the current version is great than the desired version, upgrade
-        // otherwise if it is less than, downgrade
         if ($diff === 1) {
             while ($versions->valid() && $version->compare($versions->current()) >= 0) {
                 $migrations = new MigrationIterator($this, $versions->current());
