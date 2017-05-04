@@ -2,7 +2,6 @@
 
 namespace Test;
 use Testes\Test\UnitAbstract;
-use Trek\Autoloader;
 use Trek\Migrator;
 
 class Migrations extends UnitAbstract
@@ -17,7 +16,11 @@ class Migrations extends UnitAbstract
     public function tearDown()
     {
         // ensure the version file is removed to reset tests and to not screw with version control
-        unlink(__DIR__ . '/../migrations/' . Migrator::VERSION_FILE);
+        $versionFile = __DIR__ . '/../migrations/' . Migrator::VERSION_FILE;
+
+        if (is_file($versionFile)) {
+            unlink($versionFile);
+        }
     }
 
     public function multipleUpgradesToLatestStable()
