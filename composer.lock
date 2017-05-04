@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "55d6b28b8da4a4815a037c05da026ecd",
+    "content-hash": "31fcc8434aa1a9c5c97fc9949f7c1a6d",
     "packages": [],
     "packages-dev": [
         {
@@ -104,25 +104,25 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v3.2.8",
+            "version": "v2.8.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "9cf076f8f492f4b1ffac40aae9c2d287b4ca6930"
+                "reference": "16d55394b31547e4a8494551b85c9b9915545347"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/9cf076f8f492f4b1ffac40aae9c2d287b4ca6930",
-                "reference": "9cf076f8f492f4b1ffac40aae9c2d287b4ca6930",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/16d55394b31547e4a8494551b85c9b9915545347",
+                "reference": "16d55394b31547e4a8494551b85c9b9915545347",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.5.9"
+                "php": ">=5.3.9"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.2-dev"
+                    "dev-master": "2.8-dev"
                 }
             },
             "autoload": {
@@ -149,7 +149,7 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
-            "time": "2017-04-12T14:13:17+00:00"
+            "time": "2017-04-12T14:07:15+00:00"
         }
     ],
     "aliases": [],

@@ -26,6 +26,6 @@
     "require-dev": {
         "devco/testes": "1.1.*-dev",
         "devco/event-emitter": "1.0.*-dev",
-        "symfony/finder": "^3.2"
+        "symfony/finder": "2.8.20"
     }
 }
