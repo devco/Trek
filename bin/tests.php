@@ -34,7 +34,7 @@ echo PHP_EOL;
 $suite->addTests(new Finder($base . '/tests', 'Test'));
 $suite->run(getTestEvent());
 
-echo PHP_EOL . PHP_EOL . sprintf('Ran %d test%s.', count($suite), count($suite) === 1 ? '' : 's');
+echo PHP_EOL . sprintf('Ran %d test%s.', count($suite), count($suite) === 1 ? '' : 's');
 
 // <Coverage>
 $analyzer = $coverage->stop();
@@ -78,10 +78,11 @@ if ($suite->getExceptions()->count()) {
     foreach ($suite->getExceptions() as $e) {
         echo str_replace(PHP_EOL, PHP_EOL . '  ',  $e->getException()->__toString());
     }
+
+    echo PHP_EOL;
 }
 
-echo PHP_EOL . PHP_EOL;
-
+echo PHP_EOL;
 
 function getTestEvent() {
     $event = new Event;
