@@ -50,9 +50,9 @@ class Migrations extends UnitAbstract
     public function rollbackProcedureUsingFullUpgrade()
     {
         // ensure an exception is caught
-        try {
-            $this->migrator->up();
-        } catch (\Exception $e) {
+        $this->migrator->up();
+
+        if ($e = $this->migrator->error()) {
             $this->assert($e->getMessage() === 'Testing rollback.');
         }
 

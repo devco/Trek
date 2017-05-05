@@ -62,7 +62,7 @@ if ($suite->getAssertions()->isPassed()) {
     echo PHP_EOL;
 
     foreach ($suite->getAssertions()->getFailed() as $ass) {
-        echo $ass->getTestClass() . ' Line: ' .  $ass->getTestLine() .
+        echo $ass->getTestClass() . ' Line: ' .  $ass->getTestLine() . ' ' .
         $ass->getMessage() . PHP_EOL;
     }
 
