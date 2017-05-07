@@ -35,6 +35,8 @@ class MigrationsFiltered extends UnitAbstract
         $this->migrator->up();
 
         $this->assert(DoFakeWork::$counterUp === 1, 'Should have completed 1 migrations');
+        $this->assert($this->migrator->version()->compare('1.1.0') === 0,
+            'Version should migrate despite no migrations in that namespace');
     }
 
     public function migrateDownWithClassFilter()
