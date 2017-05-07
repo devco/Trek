@@ -34,6 +34,8 @@ echo PHP_EOL;
 $suite->addTests(new Finder($base . '/tests', 'Test'));
 $suite->run(getTestEvent());
 
+echo "Total Time: \033[1m" . number_format($runner->totalTime, 3) . "\033[0m" . PHP_EOL;
+
 echo PHP_EOL . sprintf('Ran %d test%s.', count($suite), count($suite) === 1 ? '' : 's');
 
 // <Coverage>
@@ -62,7 +64,7 @@ if ($suite->getAssertions()->isPassed()) {
     echo PHP_EOL;
 
     foreach ($suite->getAssertions()->getFailed() as $ass) {
-        echo $ass->getTestClass() . ' Line: ' .  $ass->getTestLine() .
+        echo $ass->getTestClass() . ' Line: ' .  $ass->getTestLine() . ' ' .
         $ass->getMessage() . PHP_EOL;
     }
 
@@ -83,6 +85,10 @@ if ($suite->getExceptions()->count()) {
 }
 
 echo PHP_EOL;
+
+if ($suite->isFailed()) {
+    exit(1);
+}
 
 function getTestEvent() {
     $event = new Event;

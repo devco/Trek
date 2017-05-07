@@ -11,11 +11,22 @@ class MigrationIterator implements \Iterator
 
     private $version;
 
+    private static $classFilters = [];
+
     public function __construct(Migrator $migrator, VersionInterface $version)
     {
         $this->migrator = $migrator;
         $this->version  = $version;
         $this->detectMigrations();
+    }
+
+    public static function setClassFilters(array $filters)
+    {
+        self::$classFilters = [];
+
+        array_walk($filters, function($filter) {
+            self::$classFilters[] = $filter;
+        });
     }
 
     public function up()
@@ -99,6 +110,16 @@ class MigrationIterator implements \Iterator
             );
         }
 
+        if (count(self::$classFilters)) {
+            $countFiltersLeft = count(array_filter(self::$classFilters, function($classFilter) use($class) {
+                return get_parent_class($class) === $classFilter;
+            }));
+
+            if ($countFiltersLeft === 0) {
+                return false;
+            }
+        }
+
         return $class;
     }
 
@@ -128,7 +149,9 @@ class MigrationIterator implements \Iterator
 
         // then instantiate them
         foreach ($temp as $item) {
-            $this->migrations[] = $this->instantiate($item);
+            if ($itemClass = $this->instantiate($item)) {
+                $this->migrations[] = $itemClass;
+            }
         }
     }
 }
